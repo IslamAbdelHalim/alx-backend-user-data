@@ -76,7 +76,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     return connection
 
 
-def main():
+def main() -> None:
     """
     entry point
     """
@@ -94,3 +94,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
