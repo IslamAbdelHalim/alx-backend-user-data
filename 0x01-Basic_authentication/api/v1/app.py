@@ -31,6 +31,8 @@ def before_request():
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
                       '/api/v1/forbidden/']
+    from api.v1.auth.auth import Auth
+    auth = Auth()
     is_require = auth.require_auth(request.path, excluded_paths)
     if is_require:
         if not auth.authorization_header(request):
