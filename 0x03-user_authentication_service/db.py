@@ -70,44 +70,50 @@ class DB:
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """
-        method to find user
-        
-        Return:
-            user
-        """
+        """find_user_by method
 
+        Raises:
+            InvalidRequestError
+            NoResultFound
+
+        Returns:
+            User
+        """
         if not kwargs:
             raise InvalidRequestError
 
-        columns_users = User.__table__.columns.keys()
+        column_names = User.__table__.columns.keys()
         for key in kwargs.keys():
-            if key not in columns_users:
+            if key not in column_names:
                 raise InvalidRequestError
 
         user = self._session.query(User).filter_by(**kwargs).first()
 
         if user is None:
-            return NoResultFound
+            raise NoResultFound
 
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        """
-        method that update the user
-        """
+        """ update_user method
 
+        Args:
+            user_id (int)
+
+        Raises:
+            ValueError
+        """
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise ValueError('User with id {} not found'.format(user_id))
+            raise ValueError("User with id {} not found".format(user_id))
 
         for key, value in kwargs.items():
             if not hasattr(user, key):
-                raise ValueError('User has no attribute {}'.format(key))
+                raise ValueError("User has no attribute {}".format(key))
             setattr(user, key, value)
 
         try:
-            self.__session.commit()
+            self._session.commit()
         except InvalidRequestError:
-            raise ValueError('Invalid Request')
+            raise ValueError("Invalid request")
